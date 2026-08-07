@@ -1,0 +1,18 @@
+# Changelog
+
+本项目所有显著变更都记录在此文件中，格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
+版本遵循[语义化版本](https://semver.org/lang/zh-CN/)。
+
+## [Unreleased]
+
+## [v0.0.2] - 2026-08-07
+
+### Added
+
+- 新增 AGENT.md 协作开发规范（Git 工作流、版本号、预发布后缀、提交前文档检查）
+
+## [v0.0.1] - 2026-08-07
+
+### Added
+
+- 初始版本：工业制造 AI Agent 竞赛方案（docs/inv_v1.md）
