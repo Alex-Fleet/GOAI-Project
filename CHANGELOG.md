@@ -5,9 +5,12 @@
 
 ## [Unreleased]
 
+## [v0.0.3] - 2026-08-07
+
 ### Added
 
 - 新增参赛 Idea v2：工业质量事故追责与全局处置 Agent（docs/idea_v2.md）
+- inv_v1.md 格式规范化
 
 ## [v0.0.2] - 2026-08-07
 
