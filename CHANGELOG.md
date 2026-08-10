@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- 新增 PRD：工业质量事故追责与全局处置 Agent（docs/prd/goai-quality-agent-prd.md）
+
 ## [v0.0.3] - 2026-08-07
 
 ### Added
