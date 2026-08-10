@@ -9,6 +9,10 @@
 
 - 新增 PRD：工业质量事故追责与全局处置 Agent（docs/prd/goai-quality-agent-prd.md）
 
+### Changed
+
+- PRD 行业定为半导体晶圆制造（SECOM 真实质检数据驱动），约束表去除技术选型、仅保留确定性推理原则约束
+
 ## [v0.0.3] - 2026-08-07
 
 ### Added
