@@ -5,13 +5,21 @@
 
 ## [Unreleased]
 
+## [v0.1.0] - 2026-08-12
+
 ### Added
 
 - 新增 PRD：工业质量事故追责与全局处置 Agent（docs/prd/goai-quality-agent-prd.md）
+- 新增一楼 ARD：通用分层溯源 Agent + 平台（docs/ard/goai-agent-platform-ard.md，契约先行）
+- 新增故事+demo ARD（docs/ard/goai-quality-agent-ard.md）
+- 一楼引擎实现（engine/）：Ladybug 属性图库 + 自研推理核（7 步链 + 提议→把关小循环）+ 哈希链审计 + FastAPI SSE，模拟事实测试 21 用例全绿
 
 ### Changed
 
-- PRD 行业定为半导体晶圆制造（SECOM 真实质检数据驱动），约束表去除技术选型、仅保留确定性推理原则约束
+- 行业从半导体晶圆制造调整为 CiP-DMD 气动缸离散制造（真实数据驱动定位 demo 主线）
+- 故事 vs demo 框架定稿：通用方法层 vs 气动缸实例（DMC-50H 铣床主线）
+- LLM 职责全文档同步为三职责：NLU 解析 + 探索提议 + 人话表达（决策结论由推理核把关）
+- Demo 工作台改为双栏 codex 式（左 agent 聊天窗流式 + 右内容区）
 
 ## [v0.0.3] - 2026-08-07
 

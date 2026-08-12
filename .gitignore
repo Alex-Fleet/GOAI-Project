@@ -1,0 +1,15 @@
+# 系统 / 编辑器
+.DS_Store
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# 前端
+node_modules/
+dist/
+build/
