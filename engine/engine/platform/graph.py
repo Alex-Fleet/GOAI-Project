@@ -140,7 +140,7 @@ class LadybugGraphStore:
             if "does not exist" in str(e):  # 关系表未建 → 知识不完整，返回空而非崩溃
                 return []
             raise
-        return self._rows_to_edges(start, rel, res)
+        return self._rows_to_edges(start, rel, res, backward=(direction == "backward"))
 
     def get_node(self, ref: NodeRef) -> NodeRef | None:
         cypher = f"MATCH (n:{ref.label}) WHERE n.id = $id RETURN label(n) AS lbl, n.id AS tid, n.*"
@@ -164,9 +164,13 @@ class LadybugGraphStore:
 
     # ---- 内部：结果解析 ----
 
-    def _rows_to_edges(self, src: NodeRef, rel: str, res: Any) -> list[EdgeRef]:
+    def _rows_to_edges(self, src: NodeRef, rel: str, res: Any, backward: bool = False) -> list[EdgeRef]:
         names = res.get_column_names()
-        return [EdgeRef(src, rel, self._row_to_node(row, names)) for row in res.get_all()]
+        if not backward:
+            return [EdgeRef(src, rel, self._row_to_node(row, names)) for row in res.get_all()]
+        # backward 查询：MATCH (s:..)<-[r]-(t)，从 src 出发找入边，真实图方向是 t -> src。
+        # 边轨迹必须还原为真实方向（可回放），故 EdgeRef(t, rel, src)。
+        return [EdgeRef(self._row_to_node(row, names), rel, src) for row in res.get_all()]
 
     def _row_to_node(self, row: list, names: list[str]) -> NodeRef:
         # 列名 = ['lbl', 'tid', '<label>.id', '<label>.prop2', ...]，主键已由 tid 提供

@@ -21,6 +21,7 @@ from engine import (
 )
 from engine.contracts import EvidenceEvent
 from engine.platform.executor import Executor
+from tests.helpers import StubEmbedder
 
 # 模拟知识库规则（一楼可独立跑；二楼替换为行业规则）
 MOCK_LAYER_RULES = {
@@ -137,3 +138,21 @@ def make_event(
         failed_indicators=indicators if indicators is not None else ["surface_roughness"],
         raw_ref=f"raw://{entity_ref}/qcr",
     )
+
+
+# ---------------------------------------------------------------------------
+# D6 知识入库 fixtures（stub 类定义在 tests/helpers.py，离线不碰真实网络）
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def kb_graph():
+    """纯净 5 域 schema 的 Ladybug 图（D6 入库目标）。"""
+    g = LadybugGraphStore(":memory:", default_schema())
+    yield g
+    g.close()
+
+
+@pytest.fixture
+def stub_embedder():
+    return StubEmbedder()

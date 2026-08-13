@@ -2,8 +2,9 @@
 ladybug>=0.19.1,<1.0      # 属性图存储（D1，嵌入式 + Cypher）
 fastapi>=0.115            # Web 服务（D5，SSE 流式）
 uvicorn>=0.30             # ASGI 服务器
+httpx>=0.27               # 知识入库调 LLM/embedding API（D6）
+jieba>=0.42               # 关键词检索中文分词（D6）
 
 # 开发/测试
 pytest>=8.0
-httpx>=0.27               # FastAPI TestClient 依赖
 ruff>=0.6                 # lint + format

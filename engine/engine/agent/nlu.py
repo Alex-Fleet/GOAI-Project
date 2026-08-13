@@ -76,3 +76,8 @@ class NluSide:
             obs, thr = verdict.observed, verdict.threshold
         mark = "通过" if verdict.passed else "未通过"
         return f"{head}判定规则 `{verdict.rule_id}`：observed={obs}，threshold={thr}，{mark}。"
+
+    def explain_retrieval(self, event: EvidenceEvent, refs: list) -> str:
+        """层1 检索兜底的人话：图遍历定位不到 → 知识检索定位到候选（只报事实，不编造）。"""
+        names = "、".join(f"{r.label} {r.id}" for r in refs)
+        return f"【工艺图定位】图遍历未定位到对象 {event.entity_ref!r}，知识检索兜底命中候选：{names}。"

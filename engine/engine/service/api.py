@@ -12,6 +12,7 @@ import time
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
 from .tracing import TracingService, to_dict
@@ -20,6 +21,13 @@ from .tracing import TracingService, to_dict
 def create_app(service: TracingService, nlu) -> FastAPI:
     """组装 FastAPI 应用。service/nlu 由调用方注入（二楼替换知识即可）。"""
     app = FastAPI(title="GOAI 分层溯源 Agent", version="0.1.0")
+    # 前端（D3 交互层）独立 dev server 跨域访问；生产同源部署可收窄 allow_origins
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     @app.post("/start")
     def start(raw: dict[str, Any]) -> dict:

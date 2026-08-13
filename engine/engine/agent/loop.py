@@ -10,9 +10,10 @@
 from __future__ import annotations
 
 import uuid
-from typing import Any
+from typing import Any, Protocol, runtime_checkable
 
 from ..contracts import (
+    EdgeRef,
     EvidenceEvent,
     NodeRef,
     Proposal,
@@ -22,6 +23,7 @@ from ..contracts import (
 )
 from .infer import InferenceKernel, Rule
 from .layers import (
+    Candidate,
     assess_impact,
     build_actions,
     evidence_of,
@@ -41,6 +43,18 @@ class Failure(Exception):
         self.reason = reason
 
 
+@runtime_checkable
+class Retriever(Protocol):
+    """检索兜底（ARD §5 知识入库 / 检索两路接入推理）：图遍历定位不到对象时的第二路。
+
+    二楼可选注入：用知识检索（BM25 + 向量）把事故对象映射回图上候选节点。
+    返回 Candidate(node, basis)——basis 必须是图上真实边轨迹，推理核把关时沿图验证
+    （检索只是「起点」，把关权仍在推理核，防检索编造）。engine/ 只定义挂载点，不实现。
+    """
+
+    def retrieve(self, event: EvidenceEvent) -> list[Candidate]: ...
+
+
 class TracingLoop:
     """一次事故的 7 步推理链编排。"""
 
@@ -53,6 +67,7 @@ class TracingLoop:
         audit,
         layer_rules: dict[str, list[Rule]],
         max_candidates: int = 5,
+        retriever: Retriever | None = None,
     ):
         self._kernel = kernel
         self._nlu = nlu
@@ -61,6 +76,7 @@ class TracingLoop:
         self._audit = audit
         self._rules = layer_rules
         self._max_candidates = max_candidates
+        self._retriever = retriever
 
     # ------------------------------------------------------------------
     # 入口
@@ -90,6 +106,14 @@ class TracingLoop:
     def _trace(self, chain: TraceChain, event: EvidenceEvent) -> None:
         # ---- 层1 工艺图定位 ----
         devices, materials, all_basis = explore_l1(event, self._graph)
+        # 兜底：图遍历定位不到 → 知识检索第二路（二楼可选注入；basis 仍须真实经把关）
+        if not devices and not materials and self._retriever is not None:
+            devices, materials, retrieved_basis = self._retrieve_l1(event)
+            all_basis.extend(retrieved_basis)
+            if devices or materials:
+                chain.narrative.append(
+                    self._nlu.explain_retrieval(event, [c.node for c in devices + materials])
+                )
         verdict_l1 = Verdict("locate_process_flow", len(devices), 1, ">=", bool(devices))
         self._commit(chain, TraceStep("L1", all_basis, verdict_l1, [event.raw_ref]))
         if not devices and not materials:
@@ -137,6 +161,32 @@ class TracingLoop:
         # ---- 处置建议 ----
         eq_node = eq_pool[0][0].candidate if eq_pool else None
         chain.actions = build_actions(eq_node, liabilities, chain.impact)
+
+    # ------------------------------------------------------------------
+    # 层1 检索兜底（ARD §5 检索两路接入推理）
+    # ------------------------------------------------------------------
+
+    def _retrieve_l1(self, event: EvidenceEvent) -> tuple[list, list, list[EdgeRef]]:
+        """知识检索第二路：把事故对象映射回图上候选，分设备/物料两路进判断点。
+
+        候选 basis 必须真实（二层从图上回溯构造），推理核把关时沿图验证——
+        检索只是起点，不绕过「依据必须真实存在」的安全线。节点替换为图上的
+        属性快照（含判定属性列），后续规则判定才能读到值。
+        """
+        devices: list[Candidate] = []
+        materials: list[Candidate] = []
+        seen_edges: set[EdgeRef] = set()
+        for cand in self._retriever.retrieve(event)[: self._max_candidates]:
+            node = self._graph.get_node(cand.node)
+            if node is None:
+                continue  # 图上不存在 → 无据候选，丢弃
+            seen_edges.update(cand.basis)
+            resolved = Candidate(node, cand.basis)
+            if node.label == "Equipment":
+                devices.append(resolved)
+            elif node.label == "Material":
+                materials.append(resolved)
+        return devices, materials, sorted(seen_edges, key=repr)
 
     # ------------------------------------------------------------------
     # 每层「提议 → 把关」小循环

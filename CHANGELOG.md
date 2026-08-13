@@ -5,6 +5,24 @@
 
 ## [Unreleased]
 
+## [v0.2.0] - 2026-08-13
+
+### Added
+
+- 一楼知识入库（D6）：engine/engine/kb/——结构感知切块 → LLM 三元组抽取 → 人审 → 幂等 MERGE 入 Ladybug 图 + bge-m3 向量 + Jieba/BM25 双索引（payload 带实体引用）
+- 检索两路接入推理循环（ARD §4.4）：`TracingLoop(retriever=...)` L1 检索兜底挂载点 + 候选关联校验 + basis 真实经推理核把关（防伪命中）
+- 前端工作台（D3）：engine/frontend/——React 18 + Vite 5 + @xyflow/react 双栏（左 SSE 流式叙事 + 右推理路径图 + 处置确认）
+- 演示服务：engine/scripts/serve.py（默认 8800）——图遍历直连 / 检索兜底 / 未知对象 FAILED 三条定位路径
+- 新增检索兜底 / 图查询 backward 方向 / KB 入库测试（65 用例全绿）
+
+### Changed
+
+- ARD goai-agent-platform-ard 状态改为已实现，补 §4.4 检索起点与 §9 实现状态
+
+### Fixed
+
+- Ladybug backward 查询方向 bug：返回真实图方向（src -(rel)-> dst），修复检索兜底的反向工艺回溯被推理核沿图验证误拒
+
 ## [v0.1.0] - 2026-08-12
 
 ### Added
