@@ -5,6 +5,22 @@
 
 ## [Unreleased]
 
+## [v0.3.0] - 2026-08-16
+
+### Added
+
+- 二楼 demo 完整落地（engine/demo/）：深度本体 407 节点 625 边（DMC-50H 五轴机完整深挖：主轴/进给三轴/刀库/冷却/夹具/测量/结构/材料 GB 标准/ISO 标准/工艺参数/故障因果自洽网，孤立节点清零、横向网状关系织入）+ TBox/ABox + 归因器（候选排除）+ 归因责任跟随根因
+- LLM 三职责接入（DeepSeek）：人话表达（溯源报告）/ NLU 解析（自然语言事故）/ 探索提议（图约束：候选必须 ⊆ TBox 候选集）；key 仅 env 读
+- 批量归因（/analyze_batch）：挂载即分析 98 件，推理后归因出问题按钮，点击展开单件链
+- 前端 WEBUI：d3-force 本体图（缩放/平移/拖节点/点节点看 ABox+TBox）、归因面板+盲推对照、违约金测算+哈希链、对话框问答、Markdown 渲染
+- 数据说明入 README（CiP-DMD 来源/结构/改数据方法）；数据下载脚本固化（scripts/download_cipdmd.py）
+
+### Changed
+
+- demo 设计文档（docs/research/demo-design-notes.md）重写：敏感"展示vs实际"对照/话术口径挪入根目录 INTERNAL-NOTES.md（已 gitignore，评委不可见）
+- .gitignore 增加 .env 与 INTERNAL-NOTES.md（密钥与内部记录不落盘/不进仓库）
+- DMC-50H 行程/主轴等规格为同类五轴机典型值（网络受限未取到厂商精确值，标注于本体设计文档）
+
 ## [v0.2.1] - 2026-08-13
 
 ### Added

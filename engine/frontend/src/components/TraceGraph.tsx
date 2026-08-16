@@ -3,6 +3,7 @@ import {
   Background,
   Controls,
   Handle,
+  MiniMap,
   Position,
   ReactFlow,
   type Edge,
@@ -12,13 +13,15 @@ import {
 import type { TraceStep } from '../types'
 
 // 层顺序 = 图的 x 轴列；每层一个纵列，路径自左向右展开
-const LAYER_ORDER = ['L1', 'L2', 'L3', 'L4', 'impact']
+const LAYER_ORDER = ['L1', 'L2', 'L3', 'L4', 'impact', 'L2-attribution', 'L4-root-cause']
 const LAYER_LABELS: Record<string, string> = {
   L1: '工艺图',
   L2: '判断点',
   L3: '设备内部',
   L4: '责任归属',
   impact: '波及',
+  'L2-attribution': '归因',
+  'L4-root-cause': '根因责任',
 }
 
 interface GraphData {
@@ -73,7 +76,8 @@ export default function TraceGraph({ steps, status }: Props) {
         elementsSelectable
       >
         <Background gap={18} />
-        <Controls showInteractive={false} />
+        <Controls />
+        <MiniMap pannable zoomable nodeColor={() => '#d6d3d1'} />
       </ReactFlow>
     </div>
   )

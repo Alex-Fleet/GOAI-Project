@@ -1,6 +1,13 @@
 # 系统 / 编辑器
 .DS_Store
 
+# 密钥（只从环境变量读取，禁止落盘）
+.env
+.env.*
+
+# 内部记录（评委不可见，绝不进仓库）
+INTERNAL-NOTES.md
+
 # Python
 .venv/
 __pycache__/

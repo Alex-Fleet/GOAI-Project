@@ -1,4 +1,5 @@
-import type { ExecutionReport, TraceChain } from './types'
+import type { BatchRow } from './components/BatchTable'
+import type { ExecutionReport, OntoData, SampleMeta, TraceChain } from './types'
 
 // 后端地址：默认本机 8800，可用 VITE_API_BASE 覆盖（生产同源部署时留空走相对路径）。
 const BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? 'http://localhost:8800'
@@ -8,6 +9,39 @@ export async function startIncident(payload: Record<string, unknown>): Promise<T
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
+  })
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}
+
+export async function getSamples(): Promise<SampleMeta[]> {
+  const res = await fetch(`${BASE}/samples`)
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}
+
+export async function getOntology(): Promise<OntoData> {
+  const res = await fetch(`${BASE}/ontology`)
+  if (!res.ok) throw new Error(await res.text())
+  return res.json()
+}
+
+export async function askChat(question: string): Promise<string> {
+  const res = await fetch(`${BASE}/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question }),
+  })
+  const data = (await res.json()) as { answer?: string; error?: string }
+  if (data.error) throw new Error(data.error)
+  return data.answer ?? ''
+}
+
+export async function analyzeBatch(partIds?: string[], all = false): Promise<BatchRow[]> {
+  const res = await fetch(`${BASE}/analyze_batch`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ part_ids: partIds, all }),
   })
   if (!res.ok) throw new Error(await res.text())
   return res.json()

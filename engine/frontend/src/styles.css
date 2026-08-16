@@ -139,6 +139,52 @@ body {
   padding-left: 2px;
 }
 
+/* markdown 消息内容 */
+.msg > * {
+  margin: 0.35em 0;
+}
+.msg > *:first-child {
+  margin-top: 0;
+}
+.msg > *:last-child {
+  margin-bottom: 0;
+}
+.msg h1,
+.msg h2,
+.msg h3,
+.msg h4 {
+  font-size: 1.05em;
+  margin: 0.5em 0 0.25em;
+}
+.msg strong {
+  font-weight: 700;
+}
+.msg ul,
+.msg ol {
+  padding-left: 1.2em;
+}
+.msg code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  background: var(--bg);
+  padding: 0 4px;
+  border-radius: 3px;
+}
+
+.chat-qa {
+  display: flex;
+  gap: 8px;
+}
+.chat-qa input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+  font-size: 13px;
+}
+
 .chat-input {
   padding: 12px 16px;
   border-top: 1px solid var(--border);
@@ -405,4 +451,587 @@ body {
 
 .muted {
   color: var(--muted);
+}
+
+/* ---------- Demo 工作台布局 ---------- */
+
+.app-demo {
+  flex-direction: column;
+  height: 100vh;
+}
+
+.demo-top {
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+  padding: 12px 20px 14px;
+}
+
+.demo-header {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.demo-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--ink);
+}
+
+.demo-sub {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.demo-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto; /* 右栏内容超高时可滚动 */
+}
+
+/* ---------- 事故选择 ---------- */
+
+.accidents-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.accidents-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.accidents-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.accident-list {
+  display: flex;
+  gap: 10px;
+}
+
+.accident-card {
+  flex: 1;
+  text-align: left;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.accident-card:hover {
+  border-color: var(--accent);
+}
+
+.accident-card.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-weak);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.accident-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.accident-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.accident-id {
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--muted);
+}
+
+.accident-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+}
+
+.accident-facts > div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.accident-facts dt {
+  color: var(--muted);
+}
+
+.accident-facts dd {
+  margin: 0;
+  font-family: var(--mono);
+}
+
+.accident-facts dd em {
+  font-style: normal;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* ---------- 归因面板 ---------- */
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+
+.panel-hint {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.panel-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.attribution {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.attr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.attr-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+.attr-chip.warn {
+  border-color: var(--bad);
+}
+
+.attr-chip.root {
+  border-color: var(--accent);
+  background: var(--accent-weak);
+}
+
+.attr-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.attr-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ---------- 盲推对照 ---------- */
+
+.blind-compare {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: var(--bg);
+}
+
+.blind-compare.is-match {
+  border-color: var(--ok);
+}
+
+.blind-compare.is-failed {
+  border-color: var(--bad);
+}
+
+.blind-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.blind-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  padding: 2px 0;
+}
+
+.blind-row span {
+  color: var(--muted);
+}
+
+.blind-verdict {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border);
+  font-size: 12px;
+  color: var(--ok);
+}
+
+.blind-compare.is-failed .blind-verdict {
+  color: var(--bad);
+}
+
+/* ---------- 聊天状态 ---------- */
+
+.chat-status {
+  font-style: normal;
+  font-family: var(--mono);
+  color: var(--accent);
+  font-size: 11px;
+}
+
+/* ---------- 本体可视化（d3-force） ---------- */
+
+.ontology-panel {
+  flex: 0 0 44vh; /* 本体图面板占 44% 视高，给下方表格留空间 */
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.onto-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden; /* 力导向节点约束进面板，溢出不遮下方 */
+}
+
+.onto-svg {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  touch-action: none; /* 触摸操作交给图的平移/缩放，不滚动页面 */
+}
+
+.onto-edge {
+  stroke: #d6d3d1;
+  stroke-width: 1;
+}
+
+.onto-edge.is-hit {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+
+.onto-node-label {
+  font-size: 8.5px;
+  font-weight: 600;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.onto-node-sub {
+  font-size: 8px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* ---------- 节点详情（ABox / TBox） ---------- */
+
+.onto-detail {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 280px;
+  max-height: 90%;
+  overflow-y: auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 12px 14px;
+}
+
+.onto-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  border: none;
+  background: none;
+  font-size: 16px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.onto-detail-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  padding-right: 18px;
+}
+
+.onto-detail-sec {
+  margin-top: 10px;
+  border-top: 1px dashed var(--border);
+  padding-top: 8px;
+}
+
+.onto-detail-head {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.onto-props {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.onto-props > div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.onto-props dt {
+  color: var(--muted);
+}
+
+.onto-props dd {
+  margin: 0;
+  font-family: var(--mono);
+}
+
+.onto-rel {
+  margin: 0;
+  padding-left: 1.1em;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.onto-rel li {
+  font-size: 12px;
+  font-family: var(--mono);
+}
+
+.rel-type {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- 批次分析 ---------- */
+
+.batch {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.batch-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.batch-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.batch-summary {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.batch-summary span {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sum-pass {
+  background: #e7f0e6;
+  color: var(--ok);
+}
+
+.sum-mat {
+  background: var(--accent-weak);
+  color: var(--accent);
+}
+
+.sum-clamp {
+  background: #e9e4f5;
+  color: #5b3fb0;
+}
+
+.sum-fail {
+  background: #f9e8e7;
+  color: var(--bad);
+}
+
+.batch-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.batch-btn {
+  margin-left: auto;
+}
+
+/* ---------- 归因结果按钮（推理后出现） ---------- */
+
+.root-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.root-label {
+  font-size: 12.5px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.root-btn {
+  padding: 5px 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--panel);
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.root-btn em {
+  font-style: normal;
+  font-family: var(--mono);
+  color: var(--muted);
+  margin-left: 2px;
+}
+
+.root-btn:hover {
+  border-color: var(--accent);
+}
+
+.root-btn.is-active {
+  border-color: var(--accent);
+  background: var(--accent-weak);
+}
+
+.root-btn.is-active em {
+  color: var(--accent);
+}
+
+.batch-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.batch-table th {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 11.5px;
+}
+
+.batch-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--bg);
+}
+
+.batch-row {
+  cursor: pointer;
+}
+
+.batch-row:hover {
+  background: var(--bg);
+}
+
+.batch-row.is-selected {
+  background: var(--accent-weak);
+}
+
+.badge {
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-ready {
+  background: var(--accent-weak);
+  color: var(--accent);
+}
+
+.badge-pass {
+  background: #e7f0e6;
+  color: var(--ok);
+}
+
+.badge-failed {
+  background: #f9e8e7;
+  color: var(--bad);
+}
+
+.badge-no_data {
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.mono {
+  font-family: var(--mono);
+}
+
+.accent {
+  color: var(--accent);
+  font-weight: 600;
 }

@@ -1,95 +1,80 @@
 import { useEffect, useRef, useState } from 'react'
-import { startIncident, streamNarrative } from '../api'
-import type { TraceChain } from '../types'
+import ReactMarkdown from 'react-markdown'
+import { askChat } from '../api'
 
 interface Msg {
-  role: 'user' | 'agent' | 'error'
+  role: string
   text: string
 }
 
 interface Props {
-  onChain: (chain: TraceChain) => void
-  onStatus: (status: string) => void
+  messages: Msg[]
+  busy: boolean
+  status: string
 }
 
-const SAMPLE = {
-  entity_ref: 'P1',
-  entity_type: 'product',
-  ts: 100.0,
-  failed_indicators: ['surface_roughness'],
-  raw_ref: 'raw://P1/qcr',
-}
-
-export default function ChatPane({ onChain, onStatus }: Props) {
-  const [messages, setMessages] = useState<Msg[]>([])
-  const [input, setInput] = useState(JSON.stringify(SAMPLE, null, 2))
-  const [busy, setBusy] = useState(false)
-  const abortRef = useRef<() => void>(() => {})
+export default function ChatPane({ messages, busy, status }: Props) {
+  const [input, setInput] = useState('')
+  const [asking, setAsking] = useState(false)
+  const [localMsgs, setLocalMsgs] = useState<Msg[]>([])
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
-
-  useEffect(() => () => abortRef.current(), []) // 卸载时中止 SSE
+  }, [messages, localMsgs])
 
   async function send() {
-    let payload: Record<string, unknown>
+    const q = input.trim()
+    if (!q || asking) return
+    setInput('')
+    setLocalMsgs((m) => [...m, { role: 'user', text: q }])
+    setAsking(true)
     try {
-      payload = JSON.parse(input) as Record<string, unknown>
-    } catch {
-      setMessages((m) => [...m, { role: 'error', text: 'JSON 解析失败，请检查输入格式。' }])
-      return
-    }
-    abortRef.current() // 中止上一轮流
-    setBusy(true)
-    const summary = `${payload.entity_ref} · ${String(payload.failed_indicators ?? []).replace(/"/g, '')}`
-    setMessages((m) => [...m, { role: 'user', text: `事故：${summary}` }])
-    try {
-      const chain = await startIncident(payload)
-      onChain(chain)
-      abortRef.current = streamNarrative(chain.id, {
-        onNarrative: (text) => setMessages((m) => [...m, { role: 'agent', text }]),
-        onDone: (status, _hash) => {
-          onStatus(status)
-          setBusy(false)
-        },
-      })
+      const ans = await askChat(q)
+      setLocalMsgs((m) => [...m, { role: 'agent', text: ans }])
     } catch (e) {
-      setMessages((m) => [...m, { role: 'error', text: `启动失败：${String(e)}` }])
-      setBusy(false)
+      setLocalMsgs((m) => [...m, { role: 'error', text: `问答失败：${String(e)}` }])
     }
+    setAsking(false)
   }
+
+  const all = [...messages, ...localMsgs]
 
   return (
     <aside className="chat-pane">
       <header className="chat-header">
         <span className="chat-title">溯源 Agent</span>
-        <span className="chat-sub">分层下钻 · 白箱回放 · 哈希审计</span>
+        <span className="chat-sub">
+          神经-符号 · 白箱回放 · 哈希审计
+          {status && <em className="chat-status"> · {status}</em>}
+        </span>
       </header>
       <div className="chat-msgs">
-        {messages.length === 0 && (
+        {all.length === 0 && (
           <p className="chat-placeholder">
-            输入事故报告 JSON 后点击「开始溯源」。推理过程将在此逐层流式输出。
+            推理过程逐层流式输出；也可以直接提问 Agent（例：「空切一般是什么原因？」）。
           </p>
         )}
-        {messages.map((m, i) => (
+        {all.map((m, i) => (
           <div key={i} className={`msg msg-${m.role}`}>
-            {m.text}
+            <ReactMarkdown>{m.text}</ReactMarkdown>
           </div>
         ))}
+        {(busy || asking) && <div className="msg msg-agent">…</div>}
         <div ref={bottomRef} />
       </div>
-      <div className="chat-input">
-        <textarea
+      <div className="chat-input chat-qa">
+        <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          spellCheck={false}
-          rows={5}
-          aria-label="事故报告 JSON"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') void send()
+          }}
+          placeholder="提问 Agent（回车发送）"
+          aria-label="问题"
         />
-        <button onClick={send} disabled={busy} className="send-btn">
-          {busy ? '溯源中…' : '开始溯源'}
+        <button onClick={() => void send()} disabled={asking || !input.trim()} className="send-btn">
+          发送
         </button>
       </div>
     </aside>
